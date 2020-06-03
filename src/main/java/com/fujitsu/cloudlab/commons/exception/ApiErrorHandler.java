@@ -15,7 +15,7 @@ public class ApiErrorHandler{
   @ExceptionHandler(java.util.NoSuchElementException.class)
   public ResponseEntity<Object> handleNotFoundException(Exception ex, WebRequest request) {
     ErrorResponses errorResponses = new ErrorResponses();
-    errorResponses.setCode("FAI-ORD-4004");
+    errorResponses.setCode("FAI-4004");
     errorResponses.setMessage("ORDER_NOT_FOUND");
     errorResponses.setDeveloperMessage(
         ex.getMessage()
