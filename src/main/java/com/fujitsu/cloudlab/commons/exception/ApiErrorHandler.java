@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 
 @ControllerAdvice
 public class ApiErrorHandler{
@@ -35,6 +36,15 @@ public class ApiErrorHandler{
     return new ResponseEntity<Object>(
         errorResponses, new HttpHeaders(), HttpStatus.MULTI_STATUS);
   }
+  
+  @ExceptionHandler(CallNotPermittedException.class)
+  public ResponseEntity<Object> handleCallNotPermittedException(CallNotPermittedException ex) {
+	    ErrorResponses errorResponses = new ErrorResponses();
+	    errorResponses.setCode("FAI-3007");
+	    errorResponses.setMessage("CIRCUIT_BREAKER_IS_NOW_OPEN");
+	    errorResponses.setDeveloperMessage(ex.getMessage());
+	    return new ResponseEntity<Object>(errorResponses, new HttpHeaders(), HttpStatus.TEMPORARY_REDIRECT);
+	  }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Object> handleAllOtherExceptions(Exception ex, WebRequest request) {
